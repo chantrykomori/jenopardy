@@ -1,0 +1,10 @@
+/.env
+/.venv
+/.vscode
+/build
+/dump.sql
+/jenopardy.spec
+/jsondump
+/quiz.png
+/tests
+/__pycache__
