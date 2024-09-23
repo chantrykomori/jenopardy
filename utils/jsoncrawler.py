@@ -13,17 +13,11 @@ Rounds: TypeAlias = tuple[BeautifulSoup, BeautifulSoup, BeautifulSoup]
 ClueDict: TypeAlias = dict[str, dict[str, str]]
 
 def soupify_link(url) -> BeautifulSoup:
-    """
-    Turns a URL into soup.
-    """
     html = requests.get(url)
     soup = BeautifulSoup(html.text, 'lxml')
     return soup
 
 def get_seasons() -> list[str]:
-    """
-    Creates a list of all links to season pages, then returns a list of URLs.
-    """
     soup = soupify_link(SEASONS_URL)
     links = soup.find_all("a")
     season_links = []
@@ -39,9 +33,6 @@ def get_seasons() -> list[str]:
     return season_links[2:]
 
 def get_episodes(season_link) -> list[str]:
-    """
-    Creates a list of all links to episode pages, then returns a list of URls.
-    """
     game_links = []
     soup = soupify_link(season_link)
     links = soup.find_all("a")
@@ -58,10 +49,6 @@ def get_episodes(season_link) -> list[str]:
     return game_links
 
 def create_rounds(soup: BeautifulSoup) -> Rounds:
-    """
-    Creates a 3-element tuple of soups that contain a jeopardy round. Call elements of the tuple to work with individual rounds.
-    """
-    
     # regex is the devil
     game_soup = soup.find("div", {"id":"game_title"})
     if game_soup is not None:
@@ -86,9 +73,6 @@ def create_rounds(soup: BeautifulSoup) -> Rounds:
     return jrounds # type: ignore
 
 def get_categories(soup: BeautifulSoup) -> list[str]:
-    """
-    Give this a soup that contains a jeopardy round and it will give you the categories as a string list.
-    """
     jround = soup.find("table", {"class":"round"})
     category_soups = jround.find_all("td", {"class":"category_name"}) # type: ignore
     categories = []
@@ -101,9 +85,6 @@ def get_categories(soup: BeautifulSoup) -> list[str]:
         raise ValueError("Can't get categories")
 
 def get_clues(jround: BeautifulSoup, is_double: bool) -> ClueDict:
-    """
-    Parses a round of Jeopardy and creates a nested dict that resembles the Jeopardy structure. Returns a dict.
-    """
     CLUE_CONSTS = [1, 2, 3, 4, 5]
     CATEGORY_CONSTS = [1, 2, 3, 4, 5, 6]
     DJ_KEY = "DJ"
@@ -182,9 +163,6 @@ def get_clues(jround: BeautifulSoup, is_double: bool) -> ClueDict:
     return round_dict
 
 def get_final_jeopardy(jround: BeautifulSoup) -> ClueDict:
-    """
-    Generates a FJ category, question, and answer.
-    """
     if jround == "null":
         category_string = "null_category"
         clue_string = "null_FJ"
@@ -199,9 +177,6 @@ def get_final_jeopardy(jround: BeautifulSoup) -> ClueDict:
     return final_jeopardy_round
 
 def build_episode_data(soup) -> tuple[ClueDict, ClueDict, ClueDict]:
-    """
-    Gets the clues and answers in all three rounds of an episode, and returns the full episode as a tuple.
-    """
     # This needs to run for all episodes, not just the two on the pilots
     jrounds = create_rounds(soup)
     full_episode_list = []
@@ -219,7 +194,6 @@ def build_episode_data(soup) -> tuple[ClueDict, ClueDict, ClueDict]:
     return full_episode
 
 def get_title(episode_link: str) -> str:
-    """Returns the title of a given URL's game."""
     episode_soup = soupify_link(episode_link)
     title_soup = episode_soup.find("div", {"id":"game_title"})
     title_string = title_soup.get_text() # type: ignore

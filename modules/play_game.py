@@ -4,25 +4,6 @@ from modules.build_game import draw_table, draw_fj, get_value_set, remove_value,
 from thefuzz import fuzz, process
 
 def play_game(episodeID: int, what_round: str, current_score: int = 0, debug_mode: bool = False) -> int:
-    """
-    Play a regular round of Jeopardy. In the main loop, this will
-    execute twice, followed by play_final_jeopardy.
-    
-    Parameters
-    ----------
-    randomEp : int
-        EpisodeID field of the episode to use
-    whatRound : str
-        String representation of the round to use. Takes either "Regular" or "Double".
-    currentScore : int
-        If there is a previous score, uses it. Otherwise defaults to 0.
-    
-    Returns
-    -------
-    playerBank : int
-        Player's current score at the end of the round.
-    """
-
     if debug_mode is True:
         amount = int(input("How much do you want your score to be?"))
         return amount
@@ -108,24 +89,6 @@ def play_game(episodeID: int, what_round: str, current_score: int = 0, debug_mod
     return player_bank
 
 def play_final_jeopardy(episodeID: int, player_score: int = 0, debug_mode: bool = False):
-    """
-    Plays a Final Jeopardy round. In the main game loop, this runs
-    just once, after play_game runs twice. In a typical gameplay
-    scenario, the playerScore variable should always have a value,
-    but on the off-chance it doesn't it defaults to 0.
-
-    Parameters
-    ----------
-    randomEp : int
-        EpisodeID field of the episode to use.
-    playerScore : int
-        The current score. Defaults to 0.
-    
-    Returns
-    ----------
-    finalScore : int
-        The score at the end of the round.
-    """
     if debug_mode is True:
         amount = int(input("How much do you want your score to be?"))
         category = "COLORS THAT END IN URPLE"
