@@ -8,3 +8,5 @@
 /quiz.png
 /tests
 /__pycache__
+/modules/__pycache__
+/utils/__pycache__
