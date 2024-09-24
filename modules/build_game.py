@@ -1,5 +1,7 @@
 from typing import TypeAlias
 from prettytable import PrettyTable
+from prettytable.colortable import ColorTable, Themes
+from tabulate import tabulate
 
 # a value set can either contain one of the money values or the letter "x"
 # to indicate that it was already chosen
@@ -53,7 +55,7 @@ def should_remove_category(categories_w_values: CategoriesWithValues, category_n
     raise ValueError("The category does not exist in the given set")
 
 def draw_table(categories: CategoriesWithValues, player_score: int = 0) -> None:
-    table = PrettyTable()
+    table = ColorTable(theme=Themes.OCEAN)
     for category_dict in categories:
         keys = list(category_dict.keys())
         header = keys[0]
@@ -65,7 +67,7 @@ def draw_table(categories: CategoriesWithValues, player_score: int = 0) -> None:
     print(f"Player score: {player_score}")
 
 def draw_fj(category: str, question: str, player_score: int = 0) -> None:
-    table = PrettyTable()
+    table = ColorTable(theme=Themes.OCEAN)
     table.field_names = [category]
     table.add_row([question])
     print(table)
