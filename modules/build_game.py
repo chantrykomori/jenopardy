@@ -1,7 +1,5 @@
 from typing import TypeAlias
-from prettytable import PrettyTable
 from prettytable.colortable import ColorTable, Themes
-from tabulate import tabulate
 
 # a value set can either contain one of the money values or the letter "x"
 # to indicate that it was already chosen
@@ -55,7 +53,36 @@ def should_remove_category(categories_w_values: CategoriesWithValues, category_n
     raise ValueError("The category does not exist in the given set")
 
 def draw_table(categories: CategoriesWithValues, player_score: int = 0) -> None:
+    """
+    Ok heres the deal:
+
+    The things I want are double border support with colorization, header wrapping,
+    and dividers. Dividers are probably the easiest thing to add, by changing to
+    adding rows instead of columns. I will need to refactor how I get the data from
+    the CategoriesWithValue object. This is also an opportunity to refactor how
+    the board is built in play_game, which should not be in that file anyway.
+
+    Double border with colors may be possible with subclassing themes but I have yet
+    to get it to work right. I might also have good results with directly creating
+    the changes in this function. We'll see.
+
+    Header wrapping is probably not going to happen on my end. It seems like a pretty
+    regular request on Github, so let's see if that ever goes anywhere.
+    """
+
     table = ColorTable(theme=Themes.OCEAN)
+    # table.bottom_junction_char = "╩"
+    # table.bottom_left_junction_char = "╚"
+    # table.bottom_right_junction_char = "╝"
+    # table.horizontal_char = "═"
+    # table.junction_char = "╬"
+    # table.left_junction_char = "╠"
+    # table.right_junction_char = "╣"
+    # table.top_junction_char = "╦"
+    # table.top_left_junction_char = "╔"
+    # table.top_right_junction_char = "╗"
+    # table.vertical_char = "║"
+
     for category_dict in categories:
         keys = list(category_dict.keys())
         header = keys[0]
@@ -70,5 +97,6 @@ def draw_fj(category: str, question: str, player_score: int = 0) -> None:
     table = ColorTable(theme=Themes.OCEAN)
     table.field_names = [category]
     table.add_row([question])
+    # table.set_style(DOUBLE_BORDER)
     print(table)
     print(f"Player score: {player_score}")

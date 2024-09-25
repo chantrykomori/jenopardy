@@ -1,5 +1,5 @@
 import utils.dbaccess as db
-from prettytable import PrettyTable
+from prettytable import PrettyTable, DOUBLE_BORDER
 
 def user_profile(userID: int):
     result = db.get_scores(userID)
@@ -11,5 +11,6 @@ def user_profile(userID: int):
         title = str(row[1])
         time = row[2]
         table.add_row([index + 1, score, title, time])
+    table.set_style(DOUBLE_BORDER)
     print(f"{username}'s Top 10 Scores")
     print(table)

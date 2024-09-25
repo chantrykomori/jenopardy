@@ -1,5 +1,5 @@
 import utils.dbaccess as db
-from prettytable import PrettyTable
+from prettytable import PrettyTable, DOUBLE_BORDER
 
 def view_leaderboard() -> None:
     result = db.get_leaderboard()
@@ -11,5 +11,6 @@ def view_leaderboard() -> None:
         title = str(row[2])
         time = row[3]
         table.add_row([index, username, score, title, time])
+    table.set_style(DOUBLE_BORDER)
     print("\nTop 10 Global Scores")
     print(table)
