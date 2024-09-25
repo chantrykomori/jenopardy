@@ -4,6 +4,20 @@ from modules.build_game import draw_table, draw_fj, get_value_set, remove_value,
 from thefuzz import fuzz, process
 
 def play_game(episodeID: int, what_round: str, current_score: int = 0, debug_mode: bool = False) -> int:
+    """
+    I want to implement caching to make the gameplay less annoying with the
+    slow connection speed. Probably the best way to do it is to save the
+    CategoriesWithValues object, rather than recreating it every time.
+
+    This function first gets all the categories and only does it once. That's
+    fine. The problem is getting the clues. Right now it only gets a clue if 
+    the player selects a value, and that's a big performance problem.
+
+    First brainwave is to make a new function that gets all of the clues and
+    pairs them to a value. The question is how do I then mark those as completed
+    and still include them in the table?
+    """
+
     if debug_mode is True:
         amount = int(input("How much do you want your score to be?"))
         return amount
@@ -36,16 +50,16 @@ def play_game(episodeID: int, what_round: str, current_score: int = 0, debug_mod
         draw_table(category_value_dicts, player_bank)
         while category_not_chosen:
             chosen_category = input("Choose a category: ")
-            formatted_category = chosen_category.lower()
-            if formatted_category not in lower_case_categories:
+            lowercase_category = chosen_category.lower()
+            if lowercase_category not in lower_case_categories:
                 print("Invalid category! (Try copy and pasting!)")
             else:
                 category_not_chosen = False
-        categoryID = db.get_category_ID(episodeID, formatted_category)
+        categoryID = db.get_category_ID(episodeID, lowercase_category)
 
         value_not_chosen = True
         no_answer = True
-        valid_choices = get_value_set(category_value_dicts, formatted_category)
+        valid_choices = get_value_set(category_value_dicts, lowercase_category)
         while value_not_chosen:
             while no_answer:
                 try:
@@ -59,28 +73,26 @@ def play_game(episodeID: int, what_round: str, current_score: int = 0, debug_mod
                     print(valid_value)
             else:
                 value_not_chosen = False
-                category_match = process.extractOne(formatted_category, categories)
+                category_match = process.extractOne(lowercase_category, categories)
                 # this SHOULD be the unformatted category as a result 
                 # and should be able to be used in the unformatted categories
-                processed_category = category_match[0]
-                remove_value(category_value_dicts, processed_category, value)
-                category_should_be_removed = should_remove_category(category_value_dicts, processed_category)
+                found_category = category_match[0]
+                remove_value(category_value_dicts, found_category, value)
+                category_should_be_removed = should_remove_category(category_value_dicts, found_category)
                 if category_should_be_removed:
-                    categories.remove(processed_category)
+                    categories.remove(found_category)
 
-        # bunch of type ignores here because i already checked if its an int
-        # type checking really struggles with multi-type data structures tbh
-        clue = db.get_clue(categoryID, value) # type: ignore
-        print(clue[0])
-        correct_answer = clue[1].lower()
+        clue = db.get_clue(categoryID, value)
+        question, correct_answer = clue[0], clue[1].lower() # type: ignore
+        print(question)
         player_answer = input("What is... ").lower()
-        simple_ratio = fuzz.ratio(correct_answer, player_answer)
-        token_sort_ratio = fuzz.token_sort_ratio(correct_answer, player_answer)
-        if simple_ratio > 80 or token_sort_ratio > 80:
+        simple_ratio_comparison = fuzz.ratio(correct_answer, player_answer)
+        token_sort_ratio_comparison = fuzz.token_sort_ratio(correct_answer, player_answer)
+        if simple_ratio_comparison > 80 or token_sort_ratio_comparison > 80:
             print("Correct!")
             player_bank += value # type: ignore
         else:
-            print(f"Incorrect! The answer was {clue[1]}")
+            print(f"Incorrect! The answer was {correct_answer}")
             player_bank -= value # type: ignore
         valid_categories_remaining = check_for_valid_categories(category_value_dicts)
         if valid_categories_remaining == False:
@@ -98,9 +110,7 @@ def play_final_jeopardy(episodeID: int, player_score: int = 0, debug_mode: bool 
     
     final_score = player_score
     fj_tuple = db.get_final_jeopardy(episodeID)
-    category = fj_tuple[0]
-    question = fj_tuple[1]
-    correct_answer = fj_tuple[2]
+    category, question, correct_answer = fj_tuple
     print(f"The category is {category}!")
     bidding_not_complete = True
     while bidding_not_complete:
@@ -117,9 +127,9 @@ def play_final_jeopardy(episodeID: int, player_score: int = 0, debug_mode: bool 
     
     draw_fj(category, question, player_score)
     player_answer = input("What is... ")
-    simple_ratio = fuzz.ratio(correct_answer, player_answer)
-    token_sort_ratio = fuzz.token_sort_ratio(correct_answer, player_answer)
-    if simple_ratio > 80 or token_sort_ratio > 80:
+    simple_ratio_comparison = fuzz.ratio(correct_answer, player_answer)
+    token_sort_ratio_comparison = fuzz.token_sort_ratio(correct_answer, player_answer)
+    if simple_ratio_comparison > 80 or token_sort_ratio_comparison > 80:
         print("Correct!")
         final_score += bid
     else:
