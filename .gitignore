@@ -11,3 +11,7 @@
 /modules/__pycache__
 /utils/__pycache__
 /jenopardy.zip
+/altconfig.py
+/main.build
+/main.dist
+/main.onefile-build

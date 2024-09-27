@@ -4,7 +4,7 @@ Plays a game of Jeopardy.
 
 from thefuzz import fuzz, process
 import utils.dbaccess as db
-from config import Config
+from altconfig import Config
 import modules.build_game as build
 
 def play_game(episode_id: int,

@@ -5,7 +5,7 @@ from score and user management.
 """
 
 import sys
-from config import Config
+from altconfig import Config
 from modules.login import log_in
 from modules.play_game import game_loop
 from modules.leaderboard import view_leaderboard

@@ -7,7 +7,7 @@ import sshtunnel
 from pymysql import MySQLError
 from werkzeug.security import generate_password_hash, check_password_hash
 from prettytable import from_db_cursor, PrettyTable
-from config import Config
+from altconfig import Config
 import utils.access_queries as q
 
 sshtunnel.SSH_TIMEOUT = 300.0
