@@ -1,9 +1,15 @@
-import utils.dbaccess as db
-from prettytable import PrettyTable, DOUBLE_BORDER
+"""
+Displays the user's profile information, which is currently
+just a list of all of their scores.
+"""
 
-def user_profile(userID: int):
-    result = db.get_scores(userID)
-    username = db.get_username(userID)
+from prettytable import PrettyTable, DOUBLE_BORDER
+import utils.dbaccess as db
+
+def user_profile(user_id: int):
+    """Displays the user profile."""
+    result = db.get_scores(user_id)
+    username = db.get_username(user_id)
     table = PrettyTable()
     table.field_names = ["#", "Score", "Episode Title", "Earned Date"]
     for index, row in enumerate(result):

@@ -1,3 +1,7 @@
+"""
+SQL queries used to access the database server-side.
+"""
+
 SQL_INSERT_EPISODE = """
     INSERT INTO episodes 
     (epDate, epTitle) 

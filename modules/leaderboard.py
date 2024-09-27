@@ -1,7 +1,13 @@
-import utils.dbaccess as db
+"""
+Creates a leaderboard table of the top ten highest scores in the database,
+as well as who earned the score, when, and what episode they played.
+"""
+
 from prettytable import PrettyTable, DOUBLE_BORDER
+import utils.dbaccess as db
 
 def view_leaderboard() -> None:
+    """Creates a leaderboard PrettyTable to display the top ten scores."""
     result = db.get_leaderboard()
     table = PrettyTable()
     table.field_names = ["#", "Player", "Score", "Episode Title", "Earned Date"]

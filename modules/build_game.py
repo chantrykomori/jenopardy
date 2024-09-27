@@ -1,3 +1,7 @@
+"""
+Builds the gameboard to display to the player.
+"""
+
 from typing import TypeAlias
 from prettytable.colortable import ColorTable, Themes
 
@@ -8,6 +12,7 @@ Category : TypeAlias = dict[str, ValueSet]
 CategoriesWithValues : TypeAlias = list[Category]
 
 def get_value_set(categories_w_values: CategoriesWithValues, category_name: str) -> ValueSet:
+    """Gets the correct set of values to use for the category."""
     category_name = category_name.upper()
     for category_set in categories_w_values:
         if category_name in category_set:
@@ -16,8 +21,10 @@ def get_value_set(categories_w_values: CategoriesWithValues, category_name: str)
         return value_set
     else:
         raise ValueError("Value set not found")
-        
+
 def remove_value(categories_w_values: CategoriesWithValues, category_name, value) -> None:
+    """Removes a value from the category's value set. 
+    Used to indicate a question has been answered."""
     for category_set in categories_w_values:
         if category_name in category_set:
             values_left = category_set[category_name]
@@ -26,6 +33,9 @@ def remove_value(categories_w_values: CategoriesWithValues, category_name, value
             category_set[category_name].remove(value)
 
 def check_for_valid_categories(categories_w_values: CategoriesWithValues) -> bool:
+    """Checks if any categories are valid for the player 
+    to choose a question from. A category is valid if there
+    is at least one question left in the value set to answer."""
     valid_categories = []
     for category_set in categories_w_values:
         all_value_sets = list(category_set.values())
@@ -37,19 +47,19 @@ def check_for_valid_categories(categories_w_values: CategoriesWithValues) -> boo
                 valid_categories.append(category_set)
     if len(valid_categories) >= 1:
         return True
-    else:
-        return False
+    return False
 
-def should_remove_category(categories_w_values: CategoriesWithValues, category_name: str) -> bool | None:
-    for category_set in categories_w_values:
+def should_remove_category(cat_and_values: CategoriesWithValues, category_name: str) -> bool | None:
+    """Checks if a category has any remaining values left besides 'x'. 
+    If not, it should be removed."""
+    for category_set in cat_and_values:
         if category_name in category_set:
             values = category_set[category_name]
             check = len(set(values)) # sets flatten identical values into 1 element
             if check == 1:
                 return True
-            else:
-                return False
-    
+            return False
+
     raise ValueError("The category does not exist in the given set")
 
 def draw_table(categories: CategoriesWithValues, player_score: int = 0) -> None:
@@ -94,6 +104,9 @@ def draw_table(categories: CategoriesWithValues, player_score: int = 0) -> None:
     print(f"Player score: {player_score}")
 
 def draw_fj(category: str, question: str, player_score: int = 0) -> None:
+    """Draws the Final Jeopardy gameboard, which has unique mechanics.
+    It only has one category and one table, and no value checking is necessary
+    because once the question has been answered, the game is over."""
     table = ColorTable(theme=Themes.OCEAN)
     table.field_names = [category]
     table.add_row([question])

@@ -1,9 +1,15 @@
+"""
+Config file to hold all relevant cross-module values.
+"""
+
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 class Config():
+    """Config object that holds all config values.
+    NOTE: May be better as a dataclass."""
     LOCALHOST = os.getenv("HOST")
     LOCALUSER = os.getenv("USER")
     LOCALPASSWORD = os.getenv("PASSWORD")

@@ -1,3 +1,7 @@
+"""
+SQL queries used to access the database client-side.
+"""
+
 INSERT_PLAYER = """
     INSERT INTO players
     (username, password_hash)
