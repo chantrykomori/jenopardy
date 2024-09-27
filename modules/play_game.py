@@ -100,7 +100,7 @@ def play_game(episodeID: int, what_round: str, current_score: int = 0, debug_mod
 
     return player_bank
 
-def play_final_jeopardy(episodeID: int, player_score: int = 0, debug_mode: bool = False):
+def play_final_jeopardy(episodeID: int, player_score: int = 0, debug_mode: bool = False) -> int:
     if debug_mode is True:
         amount = int(input("How much do you want your score to be?"))
         category = "COLORS THAT END IN URPLE"
@@ -138,7 +138,7 @@ def play_final_jeopardy(episodeID: int, player_score: int = 0, debug_mode: bool 
  
     return final_score
 
-def game_loop(userID: int, debug_mode: bool = False):
+def game_loop(userID: int, debug_mode: bool = False) -> None:
     warning = """NOTE: If you are asked a question that begins with "null", the answer is the exact text of the question.
 This is because the question is missing on j-archive, and the selected value is a placeholder.
 """
